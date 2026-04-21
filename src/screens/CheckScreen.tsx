@@ -17,6 +17,18 @@ import { checkSuspensionLegality, SuspensionLawRow } from '../utils/checkSuspens
 import { VerdictResult, RootTabParamList } from '../types';
 import VerdictCard from '../components/VerdictCard';
 
+/**
+ * Supabase returns the joined `states` field as either an object (one-to-one)
+ * or an array. Normalize to an object for the check utilities.
+ */
+function normalizeStates(
+  raw: unknown,
+): { name: string; abbreviation: string } | null {
+  if (!raw) return null;
+  if (Array.isArray(raw)) return (raw[0] as { name: string; abbreviation: string }) ?? null;
+  return raw as { name: string; abbreviation: string };
+}
+
 interface StateOption {
   id: string;
   name: string;
@@ -85,11 +97,11 @@ export default function CheckScreen() {
       .single();
 
     if (tintData) {
-      const law: TintLawRow = {
-        ...tintData,
-        states: tintData.states as unknown as { name: string; abbreviation: string },
-      };
-      allVerdicts.push(...checkTintLegality(profile.tint, law));
+      const states = normalizeStates(tintData.states);
+      if (states) {
+        const law: TintLawRow = { ...tintData, states };
+        allVerdicts.push(...checkTintLegality(profile.tint, law));
+      }
     }
 
     // 2. Exhaust check (only if not stock)
@@ -105,11 +117,11 @@ export default function CheckScreen() {
         .single();
 
       if (exhaustData) {
-        const law: ExhaustLawRow = {
-          ...exhaustData,
-          states: exhaustData.states as unknown as { name: string; abbreviation: string },
-        };
-        allVerdicts.push(...checkExhaustLegality(profile.exhaust, law));
+        const states = normalizeStates(exhaustData.states);
+        if (states) {
+          const law: ExhaustLawRow = { ...exhaustData, states };
+          allVerdicts.push(...checkExhaustLegality(profile.exhaust, law));
+        }
       }
     }
 
@@ -126,11 +138,11 @@ export default function CheckScreen() {
         .single();
 
       if (suspData) {
-        const law: SuspensionLawRow = {
-          ...suspData,
-          states: suspData.states as unknown as { name: string; abbreviation: string },
-        };
-        allVerdicts.push(...checkSuspensionLegality(profile.suspension, law));
+        const states = normalizeStates(suspData.states);
+        if (states) {
+          const law: SuspensionLawRow = { ...suspData, states };
+          allVerdicts.push(...checkSuspensionLegality(profile.suspension, law));
+        }
       }
     }
 

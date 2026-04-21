@@ -20,22 +20,12 @@ export default function ProfileScreen() {
   const { user, isGuest, signOut } = useAuth();
   const { vehicle, tint, exhaust, suspension, saved } = profile;
 
-  const isValid = vehicle.year >= 1900 && vehicle.make.trim() !== '' && vehicle.model.trim() !== '';
-
   const handleSave = () => {
-    if (!isValid) {
-      if (Platform.OS === 'web') {
-        alert('Please fill in year, make, and model.');
-      } else {
-        Alert.alert('Missing Info', 'Please fill in year, make, and model.');
-      }
-      return;
-    }
     markSaved();
     if (Platform.OS === 'web') {
-      alert(`Saved: ${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+      alert('Your mods are saved to this device and will persist across visits.');
     } else {
-      Alert.alert('Saved', `${vehicle.year} ${vehicle.make} ${vehicle.model}`);
+      Alert.alert('Saved', 'Your mods are saved to this device.');
     }
   };
 
@@ -48,22 +38,29 @@ export default function ProfileScreen() {
       <ExhaustForm exhaust={exhaust} onChange={setExhaust} />
       <SuspensionForm suspension={suspension} onChange={setSuspension} />
 
-      <Pressable
-        style={[styles.saveButton, !isValid && styles.saveButtonDisabled]}
-        onPress={handleSave}
-      >
+      <Pressable style={styles.saveButton} onPress={handleSave}>
         <Text style={styles.saveButtonText}>
-          {saved ? 'Saved' : 'Save Profile'}
+          {saved ? '✓ Saved to This Device' : 'Save Profile'}
         </Text>
       </Pressable>
 
       {/* Account section */}
       <View style={styles.accountSection}>
-        <Text style={styles.accountEmail}>
-          {isGuest ? 'Guest Mode' : user?.email}
-        </Text>
-        <Pressable style={styles.signOutButton} onPress={signOut}>
-          <Text style={styles.signOutText}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.accountEmail}>
+            {isGuest ? 'Browsing as Guest' : user?.email}
+          </Text>
+          {isGuest && (
+            <Text style={styles.accountSubtext}>
+              Your mods are saved to this device only.
+            </Text>
+          )}
+        </View>
+        <Pressable
+          style={isGuest ? styles.signInButton : styles.signOutButton}
+          onPress={signOut}
+        >
+          <Text style={isGuest ? styles.signInText : styles.signOutText}>
             {isGuest ? 'Sign In' : 'Sign Out'}
           </Text>
         </Pressable>
@@ -72,9 +69,12 @@ export default function ProfileScreen() {
       {saved && (
         <View style={styles.summary}>
           <Text style={styles.summaryTitle}>Current Setup</Text>
-          <Text style={styles.summaryLine}>
-            {vehicle.year} {vehicle.make} {vehicle.model}
-          </Text>
+          {(vehicle.year || vehicle.make || vehicle.model) && (
+            <Text style={styles.summaryLine}>
+              {vehicle.year || ''} {vehicle.make} {vehicle.model}
+              {vehicle.gvwr ? ` · ${vehicle.gvwr} lbs GVWR` : ''}
+            </Text>
+          )}
           <Text style={styles.summaryLine}>
             Tint — Front: {tint.front_side_vlt}% · Rear sides: {tint.rear_side_vlt}% · Rear: {tint.rear_window_vlt}%
           </Text>
@@ -112,9 +112,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
-  saveButtonDisabled: {
-    backgroundColor: '#333333',
-  },
   saveButtonText: {
     fontSize: 16,
     fontWeight: '700',
@@ -150,8 +147,13 @@ const styles = StyleSheet.create({
   },
   accountEmail: {
     fontSize: 13,
-    color: '#888888',
-    flex: 1,
+    color: '#aaaaaa',
+    fontWeight: '600',
+  },
+  accountSubtext: {
+    fontSize: 11,
+    color: '#666666',
+    marginTop: 2,
   },
   signOutButton: {
     paddingVertical: 8,
@@ -164,5 +166,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: '#f87171',
+  },
+  signInButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 6,
+    backgroundColor: '#4ade80',
+  },
+  signInText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#0f0f0f',
   },
 });
