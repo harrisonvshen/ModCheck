@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/HomeScreen';
 import CheckScreen from '../screens/CheckScreen';
+import CompareScreen from '../screens/CompareScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { RootTabParamList } from '../types';
 
@@ -27,6 +28,11 @@ export default function TabNavigator() {
         name="Check"
         component={CheckScreen}
         options={{ title: 'Check' }}
+      />
+      <Tab.Screen
+        name="Compare"
+        component={CompareScreen}
+        options={{ title: 'Compare' }}
       />
       <Tab.Screen
         name="Profile"
