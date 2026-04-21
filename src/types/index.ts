@@ -41,5 +41,6 @@ export interface VerdictResult {
 export type RootTabParamList = {
   Home: undefined;
   Check: { stateId?: string; stateName?: string } | undefined;
+  Compare: undefined;
   Profile: undefined;
 };
