@@ -26,7 +26,7 @@ const VERDICT_COLORS = {
 export default function HomeScreen() {
   const navigation = useNavigation<Nav>();
   const { profile } = useModProfile();
-  const { results, loading, error } = useAllStatesCheck({
+  const { results, loading, error, refresh } = useAllStatesCheck({
     tint: profile.tint,
     exhaust: profile.exhaust,
     suspension: profile.suspension,
@@ -87,8 +87,15 @@ export default function HomeScreen() {
         <ActivityIndicator color="#4ade80" size="large" style={{ marginTop: 40 }} />
       )}
 
-      {/* Error */}
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {/* Error with retry */}
+      {error && (
+        <View style={styles.errorBox}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Pressable style={styles.retryButton} onPress={refresh}>
+            <Text style={styles.retryText}>Try Again</Text>
+          </Pressable>
+        </View>
+      )}
 
       {/* Tile map */}
       {!loading && results.length > 0 && (
@@ -201,8 +208,28 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 14,
     color: '#f87171',
-    marginTop: 16,
     textAlign: 'center',
+  },
+  errorBox: {
+    marginTop: 20,
+    padding: 16,
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#f87171',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  retryButton: {
+    marginTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#4ade80',
+    borderRadius: 8,
+  },
+  retryText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0f0f0f',
   },
   stateGrid: {
     flexDirection: 'row',

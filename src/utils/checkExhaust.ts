@@ -20,27 +20,49 @@ export function checkExhaustLegality(
   const stateName = law.states.name;
   const abbr = law.states.abbreviation;
   const results: VerdictResult[] = [];
+  const isStraightPipe = userExhaust.type === 'straight-pipe';
 
-  // 1. Check muffler requirement
-  if (law.muffler_required && !userExhaust.muffler) {
-    results.push({
-      category: 'exhaust',
-      field: 'muffler',
-      verdict: 'red',
-      explanation: `${abbr} requires a muffler. Your setup has no muffler installed.${law.fine_first_offense ? ` Fine: ${law.fine_first_offense}.` : ''}`,
-    });
+  // 1. Straight pipe takes precedence, if illegal, don't also flag muffler
+  //    (the two issues are the same root cause and shouldn't produce two reds).
+  if (isStraightPipe) {
+    if (!law.straight_pipe_legal) {
+      results.push({
+        category: 'exhaust',
+        field: 'straight_pipe',
+        verdict: 'red',
+        explanation: `Straight pipe exhaust is illegal in ${stateName} (typically no muffler, too loud).${law.fine_first_offense ? ` Fine: ${law.fine_first_offense}.` : ''}`,
+      });
+    } else {
+      // Law explicitly allows it, trust the law, mark green.
+      results.push({
+        category: 'exhaust',
+        field: 'straight_pipe',
+        verdict: 'green',
+        explanation: `${abbr} does not prohibit straight pipe exhaust.`,
+      });
+    }
   } else {
-    results.push({
-      category: 'exhaust',
-      field: 'muffler',
-      verdict: 'green',
-      explanation: law.muffler_required
-        ? `Your muffler is installed, legal in ${stateName}.`
-        : `${abbr} does not specifically require a muffler.`,
-    });
+    // 2. Check muffler requirement (only when not straight pipe)
+    if (law.muffler_required && !userExhaust.muffler) {
+      results.push({
+        category: 'exhaust',
+        field: 'muffler',
+        verdict: 'red',
+        explanation: `${abbr} requires a muffler. Your setup has no muffler installed.${law.fine_first_offense ? ` Fine: ${law.fine_first_offense}.` : ''}`,
+      });
+    } else {
+      results.push({
+        category: 'exhaust',
+        field: 'muffler',
+        verdict: 'green',
+        explanation: law.muffler_required
+          ? `Your muffler is installed, legal in ${stateName}.`
+          : `${abbr} does not specifically require a muffler.`,
+      });
+    }
   }
 
-  // 2. Check catalytic converter
+  // 3. Check catalytic converter (always, cat delete is a federal EPA issue)
   if (!userExhaust.catalytic_converter && !law.cat_delete_legal) {
     results.push({
       category: 'exhaust',
@@ -56,26 +78,6 @@ export function checkExhaustLegality(
       explanation: userExhaust.catalytic_converter
         ? `Catalytic converter installed, legal in ${stateName}.`
         : `${abbr} allows catalytic converter removal.`,
-    });
-  }
-
-  // 3. Check straight pipe
-  if (
-    (userExhaust.type === 'straight-pipe') &&
-    !law.straight_pipe_legal
-  ) {
-    results.push({
-      category: 'exhaust',
-      field: 'straight_pipe',
-      verdict: 'red',
-      explanation: `Straight pipe exhaust is illegal in ${stateName}.${law.fine_first_offense ? ` Fine: ${law.fine_first_offense}.` : ''}`,
-    });
-  } else if (userExhaust.type === 'straight-pipe' && law.straight_pipe_legal) {
-    results.push({
-      category: 'exhaust',
-      field: 'straight_pipe',
-      verdict: 'yellow',
-      explanation: `Straight pipe is technically allowed in ${abbr}, but may attract enforcement attention.`,
     });
   }
 

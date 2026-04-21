@@ -33,6 +33,17 @@ export function checkSuspensionLegality(
     return results;
   }
 
+  // Guard: lifted/lowered must have a non-zero inch value to check.
+  if ((userSusp.type === 'lift' || userSusp.type === 'lowered') && userSusp.inches <= 0) {
+    results.push({
+      category: 'suspension',
+      field: 'suspension_type',
+      verdict: 'yellow',
+      explanation: `Enter a ${userSusp.type === 'lift' ? 'lift' : 'lowering'} amount in inches on the Profile tab to get an accurate check for ${stateName}.`,
+    });
+    return results;
+  }
+
   // 1. Check lift height
   if (userSusp.type === 'lift' && law.max_lift_inches !== null) {
     if (userSusp.inches <= law.max_lift_inches) {

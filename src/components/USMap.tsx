@@ -57,6 +57,30 @@ export default function USMap({ verdicts, onStatePress }: Props) {
 
             const verdict = verdictMap.get(abbr);
             const bg = verdict ? VERDICT_COLORS[verdict] : DEFAULT_FILL;
+            const isTappable = !!verdict;
+
+            if (!isTappable) {
+              // No verdict yet, show as a plain non-interactive tile
+              return (
+                <View
+                  key={colIdx}
+                  style={[
+                    styles.cell,
+                    {
+                      width: cellSize,
+                      height: cellSize,
+                      margin: GAP / 2,
+                      backgroundColor: bg,
+                      opacity: 0.5,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.cellText, { fontSize: cellSize > 30 ? 10 : 7 }]}>
+                    {abbr}
+                  </Text>
+                </View>
+              );
+            }
 
             return (
               <Pressable

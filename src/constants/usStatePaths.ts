@@ -64,7 +64,6 @@ export const US_STATE_TILES: StateTile[] = [
   { abbreviation: 'TN', row: 5, col: 5 },
   { abbreviation: 'NC', row: 5, col: 6 },
   { abbreviation: 'SC', row: 5, col: 7 },
-  { abbreviation: 'DC', row: 5, col: 8 },
 
   // Row 6
   { abbreviation: 'OK', row: 6, col: 3 },

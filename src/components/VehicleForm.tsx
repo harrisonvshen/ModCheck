@@ -8,11 +8,12 @@ interface Props {
 }
 
 export default function VehicleForm({ vehicle, onChange }: Props) {
-  const currentYear = new Date().getFullYear();
-
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>Vehicle Info</Text>
+      <Text style={styles.sectionTitle}>Vehicle (optional)</Text>
+      <Text style={styles.hint}>
+        Helps us apply the right rules for heavy trucks. Skip if you're not sure.
+      </Text>
 
       <Text style={styles.label}>Year</Text>
       <TextInput
@@ -47,6 +48,23 @@ export default function VehicleForm({ vehicle, onChange }: Props) {
         value={vehicle.model}
         onChangeText={(model) => onChange({ ...vehicle, model })}
       />
+
+      <Text style={styles.label}>GVWR in lbs (optional, trucks/SUVs only)</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="e.g. 7200"
+        placeholderTextColor="#555"
+        keyboardType="number-pad"
+        maxLength={6}
+        value={vehicle.gvwr !== null ? String(vehicle.gvwr) : ''}
+        onChangeText={(text) => {
+          const parsed = parseInt(text, 10);
+          onChange({ ...vehicle, gvwr: isNaN(parsed) ? null : parsed });
+        }}
+      />
+      <Text style={styles.subHint}>
+        Gross Vehicle Weight Rating. Some states have different suspension rules for vehicles over 10,000 lbs.
+      </Text>
     </View>
   );
 }
@@ -59,7 +77,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: '#ffffff',
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  hint: {
+    fontSize: 13,
+    color: '#777777',
+    marginBottom: 12,
+    lineHeight: 18,
   },
   label: {
     fontSize: 14,
@@ -67,6 +91,12 @@ const styles = StyleSheet.create({
     color: '#aaaaaa',
     marginBottom: 6,
     marginTop: 12,
+  },
+  subHint: {
+    fontSize: 11,
+    color: '#666666',
+    marginTop: 6,
+    lineHeight: 15,
   },
   input: {
     backgroundColor: '#1a1a1a',
