@@ -140,7 +140,7 @@ export default function HomeScreen() {
         style={styles.feedbackButton}
         onPress={() =>
           Linking.openURL(
-            'mailto:harrisonshen@umass.edu?subject=ModCheck%20Feedback&body=I%20noticed%20the%20following%20issue%20or%20have%20this%20feedback%3A%0A%0A',
+            'mailto:harrisonvshen@gmail.com?subject=ModCheck%20Feedback&body=I%20noticed%20the%20following%20issue%20or%20have%20this%20feedback%3A%0A%0A',
           )
         }
       >

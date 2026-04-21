@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0f0f0f"/>
+
+  <!-- Accent strip at top -->
+  <rect x="0" y="0" width="1200" height="6" fill="#4ade80"/>
+
+  <!-- Title -->
+  <text x="600" y="160" font-family="-apple-system, system-ui, sans-serif" font-size="88" font-weight="800" fill="#ffffff" text-anchor="middle">ModCheck</text>
+
+  <!-- Tagline -->
+  <text x="600" y="215" font-family="-apple-system, system-ui, sans-serif" font-size="28" font-weight="500" fill="#aaaaaa" text-anchor="middle">Car Mod Legality Checker · All 50 US States</text>
+
+  <!-- Map grid preview -->
+  <g transform="translate(380, 275)">
+    <!-- Row 0 -->
+    <rect x="0" y="0" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="19" y="24" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">AK</text>
+    <rect x="380" y="0" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="399" y="24" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">ME</text>
+
+    <!-- Row 1 -->
+    <rect x="190" y="42" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="209" y="66" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">WI</text>
+    <rect x="342" y="42" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="361" y="66" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">VT</text>
+    <rect x="380" y="42" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="399" y="66" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NH</text>
+
+    <!-- Row 2 (main continental) -->
+    <rect x="0" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="19" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">WA</text>
+    <rect x="38" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="57" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">ID</text>
+    <rect x="76" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="95" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MT</text>
+    <rect x="114" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="133" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">ND</text>
+    <rect x="152" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="171" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MN</text>
+    <rect x="190" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="209" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">IL</text>
+    <rect x="228" y="84" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="247" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MI</text>
+    <rect x="304" y="84" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="323" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NY</text>
+    <rect x="342" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="361" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MA</text>
+    <rect x="380" y="84" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="399" y="108" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">CT</text>
+
+    <!-- Row 3 -->
+    <rect x="0" y="126" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="19" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">OR</text>
+    <rect x="38" y="126" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="57" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NV</text>
+    <rect x="76" y="126" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="95" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">WY</text>
+    <rect x="114" y="126" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="133" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">SD</text>
+    <rect x="152" y="126" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="171" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">IA</text>
+    <rect x="190" y="126" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="209" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">IN</text>
+    <rect x="228" y="126" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="247" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">OH</text>
+    <rect x="266" y="126" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="285" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">PA</text>
+    <rect x="304" y="126" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="323" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NJ</text>
+    <rect x="342" y="126" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="361" y="150" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">RI</text>
+
+    <!-- Row 4 -->
+    <rect x="0" y="168" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="19" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">CA</text>
+    <rect x="38" y="168" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="57" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">UT</text>
+    <rect x="76" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="95" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">CO</text>
+    <rect x="114" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="133" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NE</text>
+    <rect x="152" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="171" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MO</text>
+    <rect x="190" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="209" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">KY</text>
+    <rect x="228" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="247" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">WV</text>
+    <rect x="266" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="285" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">VA</text>
+    <rect x="304" y="168" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="323" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MD</text>
+    <rect x="342" y="168" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="361" y="192" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">DE</text>
+
+    <!-- Row 5 -->
+    <rect x="38" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="57" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">AZ</text>
+    <rect x="76" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="95" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NM</text>
+    <rect x="114" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="133" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">KS</text>
+    <rect x="152" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="171" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">AR</text>
+    <rect x="190" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="209" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">TN</text>
+    <rect x="228" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="247" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">NC</text>
+    <rect x="266" y="210" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="285" y="234" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">SC</text>
+
+    <!-- Row 6 -->
+    <rect x="114" y="252" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="133" y="276" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">OK</text>
+    <rect x="152" y="252" width="38" height="38" rx="4" fill="#ef4444"/>
+    <text x="171" y="276" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">LA</text>
+    <rect x="190" y="252" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="209" y="276" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">MS</text>
+    <rect x="228" y="252" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="247" y="276" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">AL</text>
+    <rect x="266" y="252" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="285" y="276" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">GA</text>
+
+    <!-- Row 7 -->
+    <rect x="0" y="294" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="19" y="318" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">HI</text>
+    <rect x="114" y="294" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="133" y="318" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">TX</text>
+    <rect x="304" y="294" width="38" height="38" rx="4" fill="#22c55e"/>
+    <text x="323" y="318" font-family="sans-serif" font-size="11" font-weight="800" fill="#fff" text-anchor="middle">FL</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="600" y="595" font-family="-apple-system, system-ui, sans-serif" font-size="20" font-weight="500" fill="#666666" text-anchor="middle">Tint · Exhaust · Suspension — Instant verdicts for every state</text>
+</svg>
