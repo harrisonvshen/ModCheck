@@ -1,47 +1,51 @@
 import React from 'react';
 import {
-  Alert,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import VehicleForm from '../components/VehicleForm';
 import TintForm from '../components/TintForm';
 import ExhaustForm from '../components/ExhaustForm';
 import SuspensionForm from '../components/SuspensionForm';
 import { useModProfile } from '../context/ModProfileContext';
 import { useAuth } from '../context/AuthContext';
+import { RootTabParamList } from '../types';
+
+type Nav = BottomTabNavigationProp<RootTabParamList, 'Profile'>;
 
 export default function ProfileScreen() {
-  const { profile, setVehicle, setTint, setExhaust, setSuspension, markSaved } = useModProfile();
+  const navigation = useNavigation<Nav>();
+  const { profile, setVehicle, setTint, setExhaust, setSuspension } = useModProfile();
   const { user, isGuest, signOut } = useAuth();
-  const { vehicle, tint, exhaust, suspension, saved } = profile;
-
-  const handleSave = () => {
-    markSaved();
-    if (Platform.OS === 'web') {
-      alert('Your mods are saved to this device and will persist across visits.');
-    } else {
-      Alert.alert('Saved', 'Your mods are saved to this device.');
-    }
-  };
+  const { vehicle, tint, exhaust, suspension } = profile;
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>My Profile</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>My Profile</Text>
+        <View style={styles.autoSaveBadge}>
+          <Text style={styles.autoSaveText}>✓ Auto-saved</Text>
+        </View>
+      </View>
+      <Text style={styles.subtitle}>
+        Your mods save automatically to this device as you type.
+      </Text>
 
       <VehicleForm vehicle={vehicle} onChange={setVehicle} />
       <TintForm tint={tint} onChange={setTint} />
       <ExhaustForm exhaust={exhaust} onChange={setExhaust} />
       <SuspensionForm suspension={suspension} onChange={setSuspension} />
 
-      <Pressable style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>
-          {saved ? '✓ Saved to This Device' : 'Save Profile'}
-        </Text>
+      <Pressable
+        style={styles.primaryButton}
+        onPress={() => navigation.navigate('Home')}
+      >
+        <Text style={styles.primaryButtonText}>See My Verdicts →</Text>
       </Pressable>
 
       {/* Account section */}
@@ -65,27 +69,6 @@ export default function ProfileScreen() {
           </Text>
         </Pressable>
       </View>
-
-      {saved && (
-        <View style={styles.summary}>
-          <Text style={styles.summaryTitle}>Current Setup</Text>
-          {(vehicle.year || vehicle.make || vehicle.model) && (
-            <Text style={styles.summaryLine}>
-              {vehicle.year || ''} {vehicle.make} {vehicle.model}
-              {vehicle.gvwr ? ` · ${vehicle.gvwr} lbs GVWR` : ''}
-            </Text>
-          )}
-          <Text style={styles.summaryLine}>
-            Tint — Front: {tint.front_side_vlt}% · Rear sides: {tint.rear_side_vlt}% · Rear: {tint.rear_window_vlt}%
-          </Text>
-          <Text style={styles.summaryLine}>
-            Exhaust — {exhaust.type}{exhaust.estimated_decibels ? ` (${exhaust.estimated_decibels} dB)` : ''} · Cat: {exhaust.catalytic_converter ? 'Yes' : 'No'} · Muffler: {exhaust.muffler ? 'Yes' : 'No'}
-          </Text>
-          <Text style={styles.summaryLine}>
-            Suspension — {suspension.type === 'stock' ? 'Stock' : `${suspension.type} ${suspension.inches}"`}
-          </Text>
-        </View>
-      )}
     </ScrollView>
   );
 }
@@ -99,42 +82,46 @@ const styles = StyleSheet.create({
     padding: 24,
     paddingBottom: 48,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 24,
     fontWeight: '700',
     color: '#ffffff',
-    marginBottom: 24,
   },
-  saveButton: {
+  subtitle: {
+    fontSize: 13,
+    color: '#777777',
+    marginTop: 4,
+    marginBottom: 20,
+  },
+  autoSaveBadge: {
+    backgroundColor: 'rgba(74, 222, 128, 0.15)',
+    borderWidth: 1,
+    borderColor: '#4ade80',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  autoSaveText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#4ade80',
+  },
+  primaryButton: {
     backgroundColor: '#4ade80',
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 8,
   },
-  saveButtonText: {
+  primaryButtonText: {
     fontSize: 16,
     fontWeight: '700',
     color: '#0f0f0f',
-  },
-  summary: {
-    marginTop: 24,
-    backgroundColor: '#1a1a1a',
-    borderRadius: 10,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#333333',
-  },
-  summaryTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#4ade80',
-    marginBottom: 8,
-  },
-  summaryLine: {
-    fontSize: 14,
-    color: '#cccccc',
-    lineHeight: 22,
   },
   accountSection: {
     marginTop: 32,
