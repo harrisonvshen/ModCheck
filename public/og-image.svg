@@ -5,11 +5,31 @@
   <!-- Accent strip at top -->
   <rect x="0" y="0" width="1200" height="6" fill="#4ade80"/>
 
+  <!-- Logo: car + checkmark, left of title -->
+  <g transform="translate(290, 130) scale(0.4)">
+    <defs>
+      <linearGradient id="greenG" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4ade80"/>
+        <stop offset="100%" stop-color="#16a34a"/>
+      </linearGradient>
+    </defs>
+    <path d="M -280 30 L -100 210 L 280 -180" stroke="url(#greenG)" stroke-width="90" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <g transform="translate(0, -20)">
+      <path d="M -220 30 Q -200 -20, -150 -30 L -90 -60 Q -50 -80, 0 -82 L 60 -80 Q 110 -70, 140 -50 L 180 -30 L 210 -20 Q 230 -12, 230 10 L 230 30 Q 230 45, 215 45 L 175 45 A 35 35 0 0 1 105 45 L -105 45 A 35 35 0 0 1 -175 45 L -215 45 Q -230 45, -230 30 Z" fill="#ffffff"/>
+      <path d="M -130 -30 Q -100 -55, -60 -62 L 50 -62 Q 90 -55, 115 -35 L 130 -10 L -135 -10 Z" fill="#0a0a0a" opacity="0.9"/>
+      <line x1="-5" y1="-62" x2="-5" y2="-10" stroke="#ffffff" stroke-width="3"/>
+      <circle cx="-140" cy="45" r="35" fill="#0a0a0a"/>
+      <circle cx="-140" cy="45" r="20" fill="#2a2a2a"/>
+      <circle cx="140" cy="45" r="35" fill="#0a0a0a"/>
+      <circle cx="140" cy="45" r="20" fill="#2a2a2a"/>
+    </g>
+  </g>
+
   <!-- Title -->
-  <text x="600" y="160" font-family="-apple-system, system-ui, sans-serif" font-size="88" font-weight="800" fill="#ffffff" text-anchor="middle">ModCheck</text>
+  <text x="670" y="160" font-family="-apple-system, system-ui, sans-serif" font-size="88" font-weight="800" fill="#ffffff" text-anchor="start">ModCheck</text>
 
   <!-- Tagline -->
-  <text x="600" y="215" font-family="-apple-system, system-ui, sans-serif" font-size="28" font-weight="500" fill="#aaaaaa" text-anchor="middle">Car Mod Legality Checker · All 50 US States</text>
+  <text x="600" y="230" font-family="-apple-system, system-ui, sans-serif" font-size="26" font-weight="500" fill="#aaaaaa" text-anchor="middle">Car Mod Legality Checker · All 50 US States</text>
 
   <!-- Map grid preview -->
   <g transform="translate(380, 275)">
