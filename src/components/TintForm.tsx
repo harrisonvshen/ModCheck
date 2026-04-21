@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TintDetails } from '../types';
 import VltSlider from './VltSlider';
+import VltVisual from './VltVisual';
 
 interface Props {
   tint: TintDetails;
@@ -16,6 +17,8 @@ export default function TintForm({ tint, onChange }: Props) {
         Set the VLT% (Visible Light Transmission) for each window position.
         Lower % = darker tint.
       </Text>
+
+      <VltVisual currentVlt={tint.front_side_vlt} />
 
       <VltSlider
         label="Front Side Windows"
