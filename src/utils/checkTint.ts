@@ -85,7 +85,7 @@ export function checkTintLegality(
         category: 'tint' as const,
         field,
         verdict: 'yellow' as Verdict,
-        explanation: `Your ${userVlt}% VLT is borderline in ${stateName}. ${abbr} requires ${lawVlt}% minimum — you're within the margin of error.`,
+        explanation: `Your ${userVlt}% VLT is borderline in ${stateName}. ${abbr} requires ${lawVlt}% minimum, and you're within the margin of error.`,
       };
     }
 
