@@ -16,11 +16,8 @@ import { checkExhaustLegality, ExhaustLawRow } from '../utils/checkExhaust';
 import { checkSuspensionLegality, SuspensionLawRow } from '../utils/checkSuspension';
 import { VerdictResult, RootTabParamList } from '../types';
 import VerdictCard from '../components/VerdictCard';
+import StateLawDetails from '../components/StateLawDetails';
 
-/**
- * Supabase returns the joined `states` field as either an object (one-to-one)
- * or an array. Normalize to an object for the check utilities.
- */
 function normalizeStates(
   raw: unknown,
 ): { name: string; abbreviation: string } | null {
@@ -33,6 +30,15 @@ interface StateOption {
   id: string;
   name: string;
   abbreviation: string;
+  inspection_required: boolean;
+  emissions_required: boolean;
+}
+
+interface StateLawBundle {
+  state: StateOption;
+  tint: any;
+  exhaust: any;
+  suspension: any;
 }
 
 type CheckRoute = RouteProp<RootTabParamList, 'Check'>;
@@ -43,6 +49,7 @@ export default function CheckScreen() {
   const [states, setStates] = useState<StateOption[]>([]);
   const [selectedState, setSelectedState] = useState<StateOption | null>(null);
   const [results, setResults] = useState<VerdictResult[]>([]);
+  const [lawBundle, setLawBundle] = useState<StateLawBundle | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [statesLoading, setStatesLoading] = useState(true);
@@ -53,7 +60,7 @@ export default function CheckScreen() {
     (async () => {
       const { data, error: err } = await supabase
         .from('states')
-        .select('id, name, abbreviation')
+        .select('id, name, abbreviation, inspection_required, emissions_required')
         .order('name');
       if (err) {
         setError('Failed to load states: ' + err.message);
@@ -82,74 +89,111 @@ export default function CheckScreen() {
     setLoading(true);
     setError(null);
     setResults([]);
+    setLawBundle(null);
 
     const allVerdicts: VerdictResult[] = [];
+    const bundle: StateLawBundle = {
+      state,
+      tint: null,
+      exhaust: null,
+      suspension: null,
+    };
 
-    // 1. Tint check
+    // 1. Tint law (fetch always, for both verdict and detail display)
     const { data: tintData } = await supabase
       .from('tint_laws')
       .select(`
         front_side_vlt, rear_side_vlt, rear_window_vlt,
-        windshield_strip, fine_first_offense, notes,
+        windshield_strip, reflective_allowed, medical_exemption,
+        fine_first_offense, notes,
         states ( name, abbreviation )
       `)
       .eq('state_id', state.id)
       .single();
 
     if (tintData) {
-      const states = normalizeStates(tintData.states);
-      if (states) {
-        const law: TintLawRow = { ...tintData, states };
+      const s = normalizeStates(tintData.states);
+      if (s) {
+        const law: TintLawRow = {
+          front_side_vlt: tintData.front_side_vlt,
+          rear_side_vlt: tintData.rear_side_vlt,
+          rear_window_vlt: tintData.rear_window_vlt,
+          windshield_strip: tintData.windshield_strip,
+          fine_first_offense: tintData.fine_first_offense,
+          notes: tintData.notes,
+          states: s,
+        };
         allVerdicts.push(...checkTintLegality(profile.tint, law));
+        bundle.tint = tintData;
       }
     }
 
-    // 2. Exhaust check (only if not stock)
-    if (profile.exhaust.type !== 'stock') {
-      const { data: exhaustData } = await supabase
-        .from('exhaust_laws')
-        .select(`
-          max_decibels, muffler_required, cat_delete_legal,
-          straight_pipe_legal, fine_first_offense, notes,
-          states ( name, abbreviation )
-        `)
-        .eq('state_id', state.id)
-        .single();
+    // 2. Exhaust law (fetch always so we can show it, but only verdict if not stock)
+    const { data: exhaustData } = await supabase
+      .from('exhaust_laws')
+      .select(`
+        max_decibels, muffler_required, cat_delete_legal,
+        straight_pipe_legal, measurement_method, fine_first_offense, notes,
+        states ( name, abbreviation )
+      `)
+      .eq('state_id', state.id)
+      .single();
 
-      if (exhaustData) {
-        const states = normalizeStates(exhaustData.states);
-        if (states) {
-          const law: ExhaustLawRow = { ...exhaustData, states };
+    if (exhaustData) {
+      bundle.exhaust = exhaustData;
+      if (profile.exhaust.type !== 'stock') {
+        const s = normalizeStates(exhaustData.states);
+        if (s) {
+          const law: ExhaustLawRow = {
+            max_decibels: exhaustData.max_decibels,
+            muffler_required: exhaustData.muffler_required,
+            cat_delete_legal: exhaustData.cat_delete_legal,
+            straight_pipe_legal: exhaustData.straight_pipe_legal,
+            fine_first_offense: exhaustData.fine_first_offense,
+            notes: exhaustData.notes,
+            states: s,
+          };
           allVerdicts.push(...checkExhaustLegality(profile.exhaust, law));
         }
       }
     }
 
-    // 3. Suspension check (only if not stock)
-    if (profile.suspension.type !== 'stock') {
-      const { data: suspData } = await supabase
-        .from('suspension_laws')
-        .select(`
-          max_lift_inches, max_bumper_height_front, max_bumper_height_rear,
-          frame_height_limit, lowering_restrictions, fine_first_offense, notes,
-          states ( name, abbreviation )
-        `)
-        .eq('state_id', state.id)
-        .single();
+    // 3. Suspension law (fetch always, verdict only if not stock)
+    const { data: suspData } = await supabase
+      .from('suspension_laws')
+      .select(`
+        max_lift_inches, max_bumper_height_front, max_bumper_height_rear,
+        frame_height_limit, lowering_restrictions, fine_first_offense, notes,
+        states ( name, abbreviation )
+      `)
+      .eq('state_id', state.id)
+      .single();
 
-      if (suspData) {
-        const states = normalizeStates(suspData.states);
-        if (states) {
-          const law: SuspensionLawRow = { ...suspData, states };
+    if (suspData) {
+      bundle.suspension = suspData;
+      if (profile.suspension.type !== 'stock') {
+        const s = normalizeStates(suspData.states);
+        if (s) {
+          const law: SuspensionLawRow = {
+            max_lift_inches: suspData.max_lift_inches,
+            max_bumper_height_front: suspData.max_bumper_height_front,
+            max_bumper_height_rear: suspData.max_bumper_height_rear,
+            frame_height_limit: suspData.frame_height_limit,
+            lowering_restrictions: suspData.lowering_restrictions,
+            fine_first_offense: suspData.fine_first_offense,
+            notes: suspData.notes,
+            states: s,
+          };
           allVerdicts.push(...checkSuspensionLegality(profile.suspension, law));
         }
       }
     }
 
-    if (allVerdicts.length === 0) {
+    if (allVerdicts.length === 0 && !bundle.tint && !bundle.exhaust && !bundle.suspension) {
       setError('No law data found for ' + state.name);
     } else {
       setResults(allVerdicts);
+      setLawBundle(bundle);
     }
     setLoading(false);
   };
@@ -162,12 +206,12 @@ export default function CheckScreen() {
       <View style={styles.modSummary}>
         <Text style={styles.modSummaryTitle}>Your Mods</Text>
         <Text style={styles.modSummaryLine}>
-          Tint — Front {profile.tint.front_side_vlt}% · Rear sides{' '}
-          {profile.tint.rear_side_vlt}% · Rear {profile.tint.rear_window_vlt}%
+          Tint: Front {profile.tint.front_side_vlt}% / Rear sides{' '}
+          {profile.tint.rear_side_vlt}% / Rear {profile.tint.rear_window_vlt}%
         </Text>
         {profile.exhaust.type !== 'stock' && (
           <Text style={styles.modSummaryLine}>
-            Exhaust — {profile.exhaust.type}
+            Exhaust: {profile.exhaust.type}
             {profile.exhaust.estimated_decibels
               ? ` (${profile.exhaust.estimated_decibels} dB)`
               : ''}
@@ -175,7 +219,7 @@ export default function CheckScreen() {
         )}
         {profile.suspension.type !== 'stock' && (
           <Text style={styles.modSummaryLine}>
-            Suspension — {profile.suspension.type} {profile.suspension.inches}"
+            Suspension: {profile.suspension.type} {profile.suspension.inches}"
           </Text>
         )}
       </View>
@@ -220,28 +264,39 @@ export default function CheckScreen() {
         <Text style={styles.errorText}>{error}</Text>
       )}
 
-      {results.length > 0 && selectedState && (
-        <View style={styles.resultsSection}>
-          <Text style={styles.resultsTitle}>
-            Results for {selectedState.name}
-          </Text>
+      {selectedState && lawBundle && (
+        <>
+          {results.length > 0 && (
+            <View style={styles.resultsSection}>
+              <Text style={styles.resultsTitle}>
+                Results for {selectedState.name}
+              </Text>
 
-          {/* Group by category */}
-          {['tint', 'exhaust', 'suspension'].map((cat) => {
-            const catResults = results.filter((r) => r.category === cat);
-            if (catResults.length === 0) return null;
-            return (
-              <View key={cat}>
-                <Text style={styles.categoryLabel}>
-                  {cat === 'tint' ? 'Window Tint' : cat === 'exhaust' ? 'Exhaust' : 'Suspension'}
-                </Text>
-                {catResults.map((r) => (
-                  <VerdictCard key={`${r.category}-${r.field}`} result={r} />
-                ))}
-              </View>
-            );
-          })}
-        </View>
+              {['tint', 'exhaust', 'suspension'].map((cat) => {
+                const catResults = results.filter((r) => r.category === cat);
+                if (catResults.length === 0) return null;
+                return (
+                  <View key={cat}>
+                    <Text style={styles.categoryLabel}>
+                      {cat === 'tint' ? 'Window Tint' : cat === 'exhaust' ? 'Exhaust' : 'Suspension'}
+                    </Text>
+                    {catResults.map((r) => (
+                      <VerdictCard key={`${r.category}-${r.field}`} result={r} />
+                    ))}
+                  </View>
+                );
+              })}
+            </View>
+          )}
+
+          {/* Full law reference */}
+          <StateLawDetails
+            state={selectedState}
+            tint={lawBundle.tint}
+            exhaust={lawBundle.exhaust}
+            suspension={lawBundle.suspension}
+          />
+        </>
       )}
     </ScrollView>
   );
