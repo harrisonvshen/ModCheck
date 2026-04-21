@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Linking,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -31,6 +32,19 @@ export default function HomeScreen() {
     exhaust: profile.exhaust,
     suspension: profile.suspension,
   });
+
+  const [search, setSearch] = useState('');
+  const trimmedSearch = search.trim().toLowerCase();
+
+  // Filtered list for the grid below the map. Map always shows all states.
+  const filteredResults = useMemo(() => {
+    if (!trimmedSearch) return results;
+    return results.filter(
+      (r) =>
+        r.name.toLowerCase().includes(trimmedSearch) ||
+        r.abbreviation.toLowerCase().includes(trimmedSearch),
+    );
+  }, [results, trimmedSearch]);
 
   const greenCount = results.filter((r) => r.worstVerdict === 'green').length;
   const yellowCount = results.filter((r) => r.worstVerdict === 'yellow').length;
@@ -102,10 +116,30 @@ export default function HomeScreen() {
         <USMap verdicts={results} onStatePress={handleMapTap} />
       )}
 
-      {/* State grid */}
+      {/* Search bar */}
       {!loading && results.length > 0 && (
+        <View style={styles.searchRow}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search states (e.g. 'Texas' or 'CA')"
+            placeholderTextColor="#666"
+            value={search}
+            onChangeText={setSearch}
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
+          {search.length > 0 && (
+            <Pressable style={styles.searchClear} onPress={() => setSearch('')}>
+              <Text style={styles.searchClearText}>✕</Text>
+            </Pressable>
+          )}
+        </View>
+      )}
+
+      {/* State grid */}
+      {!loading && filteredResults.length > 0 && (
         <View style={styles.stateGrid}>
-          {results.map((state) => (
+          {filteredResults.map((state) => (
             <Pressable
               key={state.id}
               style={[
@@ -128,6 +162,13 @@ export default function HomeScreen() {
             </Pressable>
           ))}
         </View>
+      )}
+
+      {/* No search results */}
+      {!loading && results.length > 0 && filteredResults.length === 0 && (
+        <Text style={styles.noMatchText}>
+          No states match "{search}". Try a state name or two-letter code.
+        </Text>
       )}
 
       {/* Legal disclaimer */}
@@ -230,6 +271,42 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: '#0f0f0f',
+  },
+  searchRow: {
+    position: 'relative',
+    marginBottom: 12,
+  },
+  searchInput: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#333333',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    paddingRight: 40,
+    fontSize: 15,
+    color: '#ffffff',
+  },
+  searchClear: {
+    position: 'absolute',
+    right: 8,
+    top: 0,
+    bottom: 0,
+    width: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchClearText: {
+    fontSize: 16,
+    color: '#888888',
+  },
+  noMatchText: {
+    fontSize: 13,
+    color: '#888888',
+    textAlign: 'center',
+    marginTop: 12,
+    padding: 20,
+    fontStyle: 'italic',
   },
   stateGrid: {
     flexDirection: 'row',
