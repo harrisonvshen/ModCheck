@@ -13,6 +13,7 @@ interface ModProfile {
   tint: TintDetails;
   exhaust: ExhaustDetails;
   suspension: SuspensionDetails;
+  homeStateAbbreviation: string | null;
   saved: boolean;
 }
 
@@ -22,6 +23,7 @@ interface ModProfileContextValue {
   setTint: (t: TintDetails) => void;
   setExhaust: (e: ExhaustDetails) => void;
   setSuspension: (s: SuspensionDetails) => void;
+  setHomeState: (abbreviation: string | null) => void;
   markSaved: () => void;
   markUnsaved: () => void;
   resetProfile: () => void;
@@ -48,6 +50,7 @@ const DEFAULT_PROFILE: ModProfile = {
     bumper_height_front: null,
     bumper_height_rear: null,
   },
+  homeStateAbbreviation: null,
   saved: false,
 };
 
@@ -80,6 +83,10 @@ function parseStoredProfile(raw: string | null): ModProfile | null {
       tint: { ...DEFAULT_PROFILE.tint, ...parsed.tint },
       exhaust: { ...DEFAULT_PROFILE.exhaust, ...parsed.exhaust },
       suspension: { ...DEFAULT_PROFILE.suspension, ...parsed.suspension },
+      homeStateAbbreviation:
+        typeof parsed.homeStateAbbreviation === 'string'
+          ? parsed.homeStateAbbreviation
+          : null,
       saved: !!parsed.saved,
     };
   } catch {
@@ -133,6 +140,9 @@ export function ModProfileProvider({ children }: { children: ReactNode }) {
   const setSuspension = (suspension: SuspensionDetails) =>
     setProfile((p) => ({ ...p, suspension, saved: false }));
 
+  const setHomeState = (abbreviation: string | null) =>
+    setProfile((p) => ({ ...p, homeStateAbbreviation: abbreviation }));
+
   const markSaved = () => setProfile((p) => ({ ...p, saved: true }));
   const markUnsaved = () => setProfile((p) => ({ ...p, saved: false }));
   const resetProfile = () => setProfile(DEFAULT_PROFILE);
@@ -145,6 +155,7 @@ export function ModProfileProvider({ children }: { children: ReactNode }) {
         setTint,
         setExhaust,
         setSuspension,
+        setHomeState,
         markSaved,
         markUnsaved,
         resetProfile,

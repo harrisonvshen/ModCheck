@@ -36,6 +36,15 @@ export default function HomeScreen() {
   const [search, setSearch] = useState('');
   const trimmedSearch = search.trim().toLowerCase();
 
+  // Find the user's home state verdict (if set)
+  const homeStateResult = useMemo(() => {
+    if (!profile.homeStateAbbreviation) return null;
+    return (
+      results.find((r) => r.abbreviation === profile.homeStateAbbreviation) ??
+      null
+    );
+  }, [results, profile.homeStateAbbreviation]);
+
   // Filtered list for the grid below the map. Map always shows all states.
   const filteredResults = useMemo(() => {
     if (!trimmedSearch) return results;
@@ -71,6 +80,39 @@ export default function HomeScreen() {
         {profile.exhaust.type !== 'stock' ? `  ·  Exhaust: ${profile.exhaust.type}` : ''}
         {profile.suspension.type !== 'stock' ? `  ·  Susp: ${profile.suspension.type} ${profile.suspension.inches}"` : ''}
       </Text>
+
+      {/* Home state card — shown prominently if user has pinned one */}
+      {!loading && homeStateResult && (
+        <Pressable
+          style={[
+            styles.homeStateCard,
+            { borderColor: VERDICT_COLORS[homeStateResult.worstVerdict] },
+          ]}
+          onPress={() => handleStateTap(homeStateResult)}
+        >
+          <View style={styles.homeStateHeader}>
+            <Text style={styles.homeStatePin}>📍</Text>
+            <Text style={styles.homeStateLabel}>Your Home State</Text>
+          </View>
+          <View style={styles.homeStateRow}>
+            <Text style={styles.homeStateName}>{homeStateResult.name}</Text>
+            <View
+              style={[
+                styles.homeStateBadge,
+                { backgroundColor: VERDICT_COLORS[homeStateResult.worstVerdict] },
+              ]}
+            >
+              <Text style={styles.homeStateBadgeText}>
+                {homeStateResult.worstVerdict === 'green'
+                  ? 'LEGAL'
+                  : homeStateResult.worstVerdict === 'yellow'
+                  ? 'BORDERLINE'
+                  : 'ILLEGAL'}
+              </Text>
+            </View>
+          </View>
+        </Pressable>
+      )}
 
       {/* Summary counters */}
       {!loading && results.length > 0 && (
@@ -223,6 +265,49 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#888888',
     marginBottom: 20,
+  },
+  homeStateCard: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 2,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 16,
+  },
+  homeStateHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 6,
+  },
+  homeStatePin: {
+    fontSize: 12,
+  },
+  homeStateLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#888888',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  homeStateRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  homeStateName: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#ffffff',
+  },
+  homeStateBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 5,
+  },
+  homeStateBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#0f0f0f',
   },
   summaryRow: {
     flexDirection: 'row',
