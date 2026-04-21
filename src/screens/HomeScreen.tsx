@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -122,10 +123,34 @@ export default function HomeScreen() {
         </View>
       )}
 
-      {/* Disclaimer */}
-      <Text style={styles.disclaimer}>
-        Tap any state for a detailed breakdown. Data is for informational
-        purposes only, verify with your state DMV before making decisions.
+      {/* Legal disclaimer */}
+      <View style={styles.disclaimerBox}>
+        <Text style={styles.disclaimerTitle}>⚠️  Not Legal Advice</Text>
+        <Text style={styles.disclaimerText}>
+          ModCheck provides general information about vehicle modification laws
+          for educational purposes only. Laws change and enforcement varies.
+          Always verify with your state's DMV or a qualified attorney before
+          making modification decisions. ModCheck is not responsible for any
+          fines, citations, or legal consequences.
+        </Text>
+      </View>
+
+      {/* Feedback */}
+      <Pressable
+        style={styles.feedbackButton}
+        onPress={() =>
+          Linking.openURL(
+            'mailto:harrisonshen@umass.edu?subject=ModCheck%20Feedback&body=I%20noticed%20the%20following%20issue%20or%20have%20this%20feedback%3A%0A%0A',
+          )
+        }
+      >
+        <Text style={styles.feedbackText}>
+          Found an error or have feedback? Email us
+        </Text>
+      </Pressable>
+
+      <Text style={styles.tipText}>
+        Tip: Tap any state for a detailed breakdown.
       </Text>
     </ScrollView>
   );
@@ -208,5 +233,40 @@ const styles = StyleSheet.create({
     marginTop: 24,
     textAlign: 'center',
     lineHeight: 16,
+  },
+  disclaimerBox: {
+    marginTop: 24,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 10,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: '#444444',
+  },
+  disclaimerTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#facc15',
+    marginBottom: 6,
+  },
+  disclaimerText: {
+    fontSize: 11,
+    color: '#999999',
+    lineHeight: 16,
+  },
+  feedbackButton: {
+    marginTop: 14,
+    padding: 10,
+    alignItems: 'center',
+  },
+  feedbackText: {
+    fontSize: 12,
+    color: '#4ade80',
+    textDecorationLine: 'underline',
+  },
+  tipText: {
+    fontSize: 11,
+    color: '#666666',
+    textAlign: 'center',
+    marginTop: 8,
   },
 });
