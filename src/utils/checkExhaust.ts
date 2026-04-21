@@ -56,7 +56,7 @@ export function checkExhaustLegality(
         field: 'muffler',
         verdict: 'green',
         explanation: law.muffler_required
-          ? `Your muffler is installed, legal in ${stateName}.`
+          ? `Your muffler is installed. Legal in ${stateName}.`
           : `${abbr} does not specifically require a muffler.`,
       });
     }
@@ -76,7 +76,7 @@ export function checkExhaustLegality(
       field: 'catalytic_converter',
       verdict: 'green',
       explanation: userExhaust.catalytic_converter
-        ? `Catalytic converter installed, legal in ${stateName}.`
+        ? `Catalytic converter installed. Legal in ${stateName}.`
         : `${abbr} allows catalytic converter removal.`,
     });
   }
@@ -95,7 +95,7 @@ export function checkExhaustLegality(
         category: 'exhaust',
         field: 'decibels',
         verdict: 'yellow',
-        explanation: `Your ${userExhaust.estimated_decibels} dB is close to ${abbr}'s ${law.max_decibels} dB limit, borderline.`,
+        explanation: `Your ${userExhaust.estimated_decibels} dB is close to ${abbr}'s ${law.max_decibels} dB limit. Borderline.`,
       });
     } else {
       results.push({

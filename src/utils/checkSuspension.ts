@@ -58,7 +58,7 @@ export function checkSuspensionLegality(
         category: 'suspension',
         field: 'lift_height',
         verdict: 'yellow',
-        explanation: `Your ${userSusp.inches}" lift is near ${abbr}'s ${law.max_lift_inches}" limit, borderline.`,
+        explanation: `Your ${userSusp.inches}" lift is near ${abbr}'s ${law.max_lift_inches}" limit. Borderline.`,
       });
     } else {
       results.push({
