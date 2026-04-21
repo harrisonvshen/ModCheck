@@ -12,6 +12,7 @@ import VehicleForm from '../components/VehicleForm';
 import TintForm from '../components/TintForm';
 import ExhaustForm from '../components/ExhaustForm';
 import SuspensionForm from '../components/SuspensionForm';
+import AboutSection from '../components/AboutSection';
 import { useModProfile } from '../context/ModProfileContext';
 import { useAuth } from '../context/AuthContext';
 import { RootTabParamList } from '../types';
@@ -69,6 +70,8 @@ export default function ProfileScreen() {
           </Text>
         </Pressable>
       </View>
+
+      <AboutSection />
     </ScrollView>
   );
 }
