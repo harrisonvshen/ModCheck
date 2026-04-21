@@ -49,22 +49,6 @@ export default function VehicleForm({ vehicle, onChange }: Props) {
         onChangeText={(model) => onChange({ ...vehicle, model })}
       />
 
-      <Text style={styles.label}>GVWR in lbs (optional)</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="e.g. 7200"
-        placeholderTextColor="#555"
-        keyboardType="number-pad"
-        maxLength={6}
-        value={vehicle.gvwr !== null ? String(vehicle.gvwr) : ''}
-        onChangeText={(text) => {
-          const parsed = parseInt(text, 10);
-          onChange({ ...vehicle, gvwr: isNaN(parsed) ? null : parsed });
-        }}
-      />
-      <Text style={styles.subHint}>
-        Gross Vehicle Weight Rating. Reserved for when suspension checks start differentiating heavy vehicles.
-      </Text>
     </View>
   );
 }
@@ -91,12 +75,6 @@ const styles = StyleSheet.create({
     color: '#aaaaaa',
     marginBottom: 6,
     marginTop: 12,
-  },
-  subHint: {
-    fontSize: 11,
-    color: '#666666',
-    marginTop: 6,
-    lineHeight: 15,
   },
   input: {
     backgroundColor: '#1a1a1a',
