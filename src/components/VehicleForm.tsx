@@ -12,7 +12,7 @@ export default function VehicleForm({ vehicle, onChange }: Props) {
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Vehicle (optional)</Text>
       <Text style={styles.hint}>
-        For your own reference, labels this profile. Not used in legality checks yet.
+        Optional. A label so you remember which car this profile is for. Doesn't affect verdicts.
       </Text>
 
       <Text style={styles.label}>Year</Text>
