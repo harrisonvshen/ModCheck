@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -17,6 +18,7 @@ import { checkSuspensionLegality, SuspensionLawRow } from '../utils/checkSuspens
 import { VerdictResult, RootTabParamList } from '../types';
 import VerdictCard from '../components/VerdictCard';
 import StateLawDetails from '../components/StateLawDetails';
+import { buildShareUrl, copyToClipboard, getBaseUrl } from '../utils/shareUrl';
 
 function normalizeStates(
   raw: unknown,
@@ -282,27 +284,45 @@ export default function CheckScreen() {
 
       {selectedState && lawBundle && (
         <>
-          {/* Home state pin control */}
-          <View style={styles.homeStateControls}>
+          {/* Home state pin + Share controls */}
+          <View style={styles.actionRow}>
             {profile.homeStateAbbreviation === selectedState.abbreviation ? (
               <Pressable
-                style={styles.homeStateUnpin}
+                style={[styles.actionButton, styles.homeStateUnpin]}
                 onPress={() => setHomeState(null)}
               >
                 <Text style={styles.homeStateUnpinText}>
-                  📍 This is your home state · Unpin
+                  📍 Home state · Unpin
                 </Text>
               </Pressable>
             ) : (
               <Pressable
-                style={styles.homeStatePinBtn}
+                style={[styles.actionButton, styles.homeStatePinBtn]}
                 onPress={() => setHomeState(selectedState.abbreviation)}
               >
                 <Text style={styles.homeStatePinText}>
-                  📍 Set as my home state
+                  📍 Set as home
                 </Text>
               </Pressable>
             )}
+
+            <Pressable
+              style={[styles.actionButton, styles.shareBtn]}
+              onPress={async () => {
+                const url = buildShareUrl(getBaseUrl(), {
+                  tint: profile.tint,
+                  exhaust: profile.exhaust,
+                  suspension: profile.suspension,
+                  stateAbbreviation: selectedState.abbreviation,
+                });
+                const ok = await copyToClipboard(url);
+                if (Platform.OS === 'web') {
+                  alert(ok ? 'Share link copied to clipboard!' : `Copy this link: ${url}`);
+                }
+              }}
+            >
+              <Text style={styles.shareText}>🔗 Share</Text>
+            </Pressable>
           </View>
 
           {results.length > 0 && (
@@ -431,17 +451,22 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 8,
   },
-  homeStateControls: {
+  actionRow: {
+    flexDirection: 'row',
+    gap: 8,
     marginTop: 16,
+  },
+  actionButton: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    alignItems: 'center',
   },
   homeStatePinBtn: {
     backgroundColor: '#1a1a1a',
     borderWidth: 1,
     borderColor: '#4ade80',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    alignItems: 'center',
   },
   homeStatePinText: {
     fontSize: 13,
@@ -452,14 +477,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
     borderWidth: 1,
     borderColor: '#555555',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    alignItems: 'center',
   },
   homeStateUnpinText: {
     fontSize: 13,
     fontWeight: '600',
     color: '#888888',
+  },
+  shareBtn: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#4ade80',
+  },
+  shareText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#4ade80',
   },
 });
