@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Vehicle, TintDetails, ExhaustDetails, SuspensionDetails } from '../types';
+import { parseShareParams, getCurrentSearch } from '../utils/shareUrl';
 
 interface ModProfile {
   vehicle: Omit<Vehicle, 'id'>;
@@ -98,18 +99,29 @@ export function ModProfileProvider({ children }: { children: ReactNode }) {
   const [profile, setProfile] = useState<ModProfile>(DEFAULT_PROFILE);
   const [hydrated, setHydrated] = useState(false);
 
-  // Hydrate from storage on mount
+  // Hydrate from storage on mount, then apply URL params if present
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        const parsed = parseStoredProfile(raw);
-        if (parsed && !cancelled) {
-          setProfile(parsed);
+        const stored = parseStoredProfile(raw);
+        // Start from stored (or default) profile
+        let next: ModProfile = stored ?? DEFAULT_PROFILE;
+
+        // Apply URL share params on top (web only, ignored on native)
+        const shareParams = parseShareParams(getCurrentSearch());
+        if (shareParams) {
+          next = {
+            ...next,
+            tint: shareParams.tint ?? next.tint,
+            exhaust: shareParams.exhaust ?? next.exhaust,
+            suspension: shareParams.suspension ?? next.suspension,
+          };
         }
+
+        if (!cancelled) setProfile(next);
       } catch (err) {
-        // Silently ignore — fall back to defaults
         console.warn('Failed to hydrate profile', err);
       } finally {
         if (!cancelled) setHydrated(true);
