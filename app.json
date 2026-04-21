@@ -24,7 +24,12 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "ModCheck, Car Mod Legality Checker",
+      "shortName": "ModCheck",
+      "description": "Check if your window tint, exhaust, and suspension mods are legal in any US state. Instant green/yellow/red verdicts for all 50 states.",
+      "themeColor": "#4ade80",
+      "backgroundColor": "#0f0f0f"
     }
   }
 }

@@ -17,7 +17,8 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
-  const [isGuest, setIsGuest] = useState(false);
+  // Default new visitors to guest mode, they can sign in from the Profile tab
+  const [isGuest, setIsGuest] = useState(true);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
