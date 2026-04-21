@@ -12,7 +12,7 @@ export default function VehicleForm({ vehicle, onChange }: Props) {
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>Vehicle (optional)</Text>
       <Text style={styles.hint}>
-        Helps us apply the right rules for heavy trucks. Skip if you're not sure.
+        For your own reference — labels this profile. Not used in legality checks yet.
       </Text>
 
       <Text style={styles.label}>Year</Text>
@@ -49,7 +49,7 @@ export default function VehicleForm({ vehicle, onChange }: Props) {
         onChangeText={(model) => onChange({ ...vehicle, model })}
       />
 
-      <Text style={styles.label}>GVWR in lbs (optional — trucks/SUVs only)</Text>
+      <Text style={styles.label}>GVWR in lbs (optional)</Text>
       <TextInput
         style={styles.input}
         placeholder="e.g. 7200"
@@ -63,7 +63,7 @@ export default function VehicleForm({ vehicle, onChange }: Props) {
         }}
       />
       <Text style={styles.subHint}>
-        Gross Vehicle Weight Rating. Some states have different suspension rules for vehicles over 10,000 lbs.
+        Gross Vehicle Weight Rating. Reserved for when suspension checks start differentiating heavy vehicles.
       </Text>
     </View>
   );
