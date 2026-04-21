@@ -45,7 +45,7 @@ type CheckRoute = RouteProp<RootTabParamList, 'Check'>;
 
 export default function CheckScreen() {
   const route = useRoute<CheckRoute>();
-  const { profile } = useModProfile();
+  const { profile, setHomeState } = useModProfile();
   const [states, setStates] = useState<StateOption[]>([]);
   const [selectedState, setSelectedState] = useState<StateOption | null>(null);
   const [results, setResults] = useState<VerdictResult[]>([]);
@@ -71,18 +71,34 @@ export default function CheckScreen() {
     })();
   }, []);
 
-  // Auto-check when navigated from Home with a stateId param
+  // Auto-check when navigated from Home with a stateId param, OR fall back to home state
   useEffect(() => {
-    const stateId = route.params?.stateId;
-    if (!stateId || states.length === 0) return;
-    if (didAutoCheck.current === stateId) return;
+    if (states.length === 0) return;
 
-    const match = states.find((s) => s.id === stateId);
-    if (match) {
-      didAutoCheck.current = stateId;
-      handleCheck(match);
+    const paramStateId = route.params?.stateId;
+
+    // Priority 1: explicit stateId param from navigation
+    if (paramStateId) {
+      if (didAutoCheck.current === paramStateId) return;
+      const match = states.find((s) => s.id === paramStateId);
+      if (match) {
+        didAutoCheck.current = paramStateId;
+        handleCheck(match);
+      }
+      return;
     }
-  }, [route.params?.stateId, states]);
+
+    // Priority 2: home state, if set and we haven't checked anything yet
+    if (profile.homeStateAbbreviation && !selectedState) {
+      const homeMatch = states.find(
+        (s) => s.abbreviation === profile.homeStateAbbreviation,
+      );
+      if (homeMatch && didAutoCheck.current !== homeMatch.id) {
+        didAutoCheck.current = homeMatch.id;
+        handleCheck(homeMatch);
+      }
+    }
+  }, [route.params?.stateId, states, profile.homeStateAbbreviation]);
 
   const handleCheck = async (state: StateOption) => {
     setSelectedState(state);
@@ -266,6 +282,29 @@ export default function CheckScreen() {
 
       {selectedState && lawBundle && (
         <>
+          {/* Home state pin control */}
+          <View style={styles.homeStateControls}>
+            {profile.homeStateAbbreviation === selectedState.abbreviation ? (
+              <Pressable
+                style={styles.homeStateUnpin}
+                onPress={() => setHomeState(null)}
+              >
+                <Text style={styles.homeStateUnpinText}>
+                  📍 This is your home state · Unpin
+                </Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                style={styles.homeStatePinBtn}
+                onPress={() => setHomeState(selectedState.abbreviation)}
+              >
+                <Text style={styles.homeStatePinText}>
+                  📍 Set as my home state
+                </Text>
+              </Pressable>
+            )}
+          </View>
+
           {results.length > 0 && (
             <View style={styles.resultsSection}>
               <Text style={styles.resultsTitle}>
@@ -391,5 +430,36 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 8,
     marginTop: 8,
+  },
+  homeStateControls: {
+    marginTop: 16,
+  },
+  homeStatePinBtn: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#4ade80',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+  },
+  homeStatePinText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#4ade80',
+  },
+  homeStateUnpin: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#555555',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+  },
+  homeStateUnpinText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#888888',
   },
 });
