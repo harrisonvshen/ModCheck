@@ -39,3 +39,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# editor / tooling configs (local only)
+.claude/
+.vscode/
+.idea/
