@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -13,13 +14,15 @@ interface Props {
   onValueChange: (value: number) => void;
 }
 
+const PRESETS = [5, 15, 20, 35, 50, 70] as const;
+
 export default function VltSlider({ label, value, onValueChange }: Props) {
   const clamp = (v: number) => Math.max(0, Math.min(100, v));
 
   const getColor = (vlt: number): string => {
-    if (vlt >= 70) return '#4ade80'; // light tint, green
-    if (vlt >= 35) return '#facc15'; // medium, yellow
-    return '#f87171'; // dark tint, red
+    if (vlt >= 70) return '#4ade80';
+    if (vlt >= 35) return '#facc15';
+    return '#f87171';
   };
 
   return (
@@ -45,7 +48,7 @@ export default function VltSlider({ label, value, onValueChange }: Props) {
         </View>
       </View>
 
-      {/* Slider track */}
+      {/* Slider track with fill */}
       <View style={styles.track}>
         <View
           style={[
@@ -56,22 +59,46 @@ export default function VltSlider({ label, value, onValueChange }: Props) {
             },
           ]}
         />
+        {/* Tick marks at each preset position so users can see them on the bar */}
+        {PRESETS.map((preset) => (
+          <View
+            key={preset}
+            style={[styles.tick, { left: `${preset}%` }]}
+          />
+        ))}
       </View>
 
-      {/* Tap targets for quick adjust */}
-      <View style={styles.quickButtons}>
-        {[5, 15, 20, 35, 50, 70].map((preset) => (
-          <Text
-            key={preset}
-            style={[
-              styles.preset,
-              value === preset && styles.presetActive,
-            ]}
-            onPress={() => onValueChange(preset)}
-          >
-            {preset}%
-          </Text>
-        ))}
+      {/* Preset buttons positioned at their actual VLT % on the scale */}
+      <View style={styles.presetTrack}>
+        {PRESETS.map((preset) => {
+          const isActive = value === preset;
+          return (
+            <Pressable
+              key={preset}
+              onPress={() => onValueChange(preset)}
+              style={[
+                styles.preset,
+                {
+                  left: `${preset}%`,
+                  // Pull each chip back by half its width so the center sits on the tick
+                  ...(Platform.OS === 'web'
+                    ? ({ transform: 'translateX(-50%)' } as any)
+                    : { marginLeft: -16 }),
+                },
+                isActive && styles.presetActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.presetText,
+                  isActive && styles.presetTextActive,
+                ]}
+              >
+                {preset}%
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
@@ -79,7 +106,7 @@ export default function VltSlider({ label, value, onValueChange }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: 28,
   },
   header: {
     flexDirection: 'row',
@@ -110,30 +137,46 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   track: {
-    height: 8,
+    height: 10,
     backgroundColor: '#2a2a2a',
-    borderRadius: 4,
+    borderRadius: 5,
     overflow: 'hidden',
+    position: 'relative',
   },
   fill: {
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 5,
   },
-  quickButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 8,
+  tick: {
+    position: 'absolute',
+    top: 1,
+    bottom: 1,
+    width: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+  },
+  presetTrack: {
+    position: 'relative',
+    height: 30,
+    marginTop: 6,
   },
   preset: {
-    fontSize: 13,
-    color: '#666666',
+    position: 'absolute',
+    top: 0,
     paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     borderRadius: 4,
-    overflow: 'hidden',
+    minWidth: 32,
+    alignItems: 'center',
   },
   presetActive: {
-    color: '#ffffff',
     backgroundColor: '#333333',
+  },
+  presetText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666666',
+  },
+  presetTextActive: {
+    color: '#ffffff',
   },
 });
