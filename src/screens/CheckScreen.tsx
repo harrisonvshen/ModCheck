@@ -47,7 +47,7 @@ type CheckRoute = RouteProp<RootTabParamList, 'Check'>;
 
 export default function CheckScreen() {
   const route = useRoute<CheckRoute>();
-  const { profile, setHomeState } = useModProfile();
+  const { profile, setHomeState, setCheckContext } = useModProfile();
   const [states, setStates] = useState<StateOption[]>([]);
   const [selectedState, setSelectedState] = useState<StateOption | null>(null);
   const [results, setResults] = useState<VerdictResult[]>([]);
@@ -242,6 +242,48 @@ export default function CheckScreen() {
         )}
       </View>
 
+      {/* Visiting vs Registering toggle */}
+      <Text style={styles.sectionTitle}>Trip Type</Text>
+      <View style={styles.contextRow}>
+        <Pressable
+          style={[
+            styles.contextChip,
+            profile.checkContext === 'registering' && styles.contextChipActive,
+          ]}
+          onPress={() => setCheckContext('registering')}
+        >
+          <Text
+            style={[
+              styles.contextChipText,
+              profile.checkContext === 'registering' && styles.contextChipTextActive,
+            ]}
+          >
+            🏠 Living / Registering
+          </Text>
+        </Pressable>
+        <Pressable
+          style={[
+            styles.contextChip,
+            profile.checkContext === 'visiting' && styles.contextChipActive,
+          ]}
+          onPress={() => setCheckContext('visiting')}
+        >
+          <Text
+            style={[
+              styles.contextChipText,
+              profile.checkContext === 'visiting' && styles.contextChipTextActive,
+            ]}
+          >
+            🚗 Just Visiting
+          </Text>
+        </Pressable>
+      </View>
+      <Text style={styles.contextHint}>
+        {profile.checkContext === 'registering'
+          ? 'Strictest interpretation. All equipment laws apply when you register or inspect your car here.'
+          : "Most states don't enforce equipment laws on out-of-state plates. Read the caveat below the verdicts."}
+      </Text>
+
       {/* State selector */}
       <Text style={styles.sectionTitle}>Select a State</Text>
 
@@ -330,6 +372,21 @@ export default function CheckScreen() {
               <Text style={styles.resultsTitle}>
                 Results for {selectedState.name}
               </Text>
+
+              {/* Visiting caveat */}
+              {profile.checkContext === 'visiting' && (
+                <View style={styles.caveatBox}>
+                  <Text style={styles.caveatTitle}>You're just visiting</Text>
+                  <Text style={styles.caveatBody}>
+                    Most states have reciprocity for equipment violations. If your
+                    car is registered in another state and complies with that
+                    state's laws, you're usually not ticketed for equipment while
+                    passing through. The verdicts below show the strictest
+                    interpretation. Higher-risk states for visitor enforcement
+                    include NJ, VA, and PA.
+                  </Text>
+                </View>
+              )}
 
               {['tint', 'exhaust', 'suspension'].map((cat) => {
                 const catResults = results.filter((r) => r.category === cat);
@@ -492,5 +549,56 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: '#4ade80',
+  },
+  contextRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 8,
+  },
+  contextChip: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#333333',
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  contextChipActive: {
+    backgroundColor: '#4ade80',
+    borderColor: '#4ade80',
+  },
+  contextChipText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#cccccc',
+  },
+  contextChipTextActive: {
+    color: '#0f0f0f',
+  },
+  contextHint: {
+    fontSize: 11,
+    color: '#888888',
+    lineHeight: 15,
+    marginBottom: 20,
+  },
+  caveatBox: {
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: '#facc15',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 16,
+  },
+  caveatTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#facc15',
+    marginBottom: 4,
+  },
+  caveatBody: {
+    fontSize: 12,
+    color: '#bbbbbb',
+    lineHeight: 17,
   },
 });

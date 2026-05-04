@@ -9,12 +9,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Vehicle, TintDetails, ExhaustDetails, SuspensionDetails } from '../types';
 import { parseShareParams, getCurrentSearch } from '../utils/shareUrl';
 
+export type CheckContext = 'registering' | 'visiting';
+
 interface ModProfile {
   vehicle: Omit<Vehicle, 'id'>;
   tint: TintDetails;
   exhaust: ExhaustDetails;
   suspension: SuspensionDetails;
   homeStateAbbreviation: string | null;
+  /**
+   * 'registering' = the user lives in / is registering the car in this state
+   *   (strictest interpretation, all rules apply).
+   * 'visiting' = the user is just driving through with an out-of-state plate
+   *   (most equipment laws aren't enforced on visitors per state reciprocity).
+   */
+  checkContext: CheckContext;
   saved: boolean;
 }
 
@@ -25,6 +34,7 @@ interface ModProfileContextValue {
   setExhaust: (e: ExhaustDetails) => void;
   setSuspension: (s: SuspensionDetails) => void;
   setHomeState: (abbreviation: string | null) => void;
+  setCheckContext: (ctx: CheckContext) => void;
   markSaved: () => void;
   markUnsaved: () => void;
   resetProfile: () => void;
@@ -52,6 +62,7 @@ const DEFAULT_PROFILE: ModProfile = {
     bumper_height_rear: null,
   },
   homeStateAbbreviation: null,
+  checkContext: 'registering',
   saved: false,
 };
 
@@ -88,6 +99,8 @@ function parseStoredProfile(raw: string | null): ModProfile | null {
         typeof parsed.homeStateAbbreviation === 'string'
           ? parsed.homeStateAbbreviation
           : null,
+      checkContext:
+        parsed.checkContext === 'visiting' ? 'visiting' : 'registering',
       saved: !!parsed.saved,
     };
   } catch {
@@ -155,6 +168,9 @@ export function ModProfileProvider({ children }: { children: ReactNode }) {
   const setHomeState = (abbreviation: string | null) =>
     setProfile((p) => ({ ...p, homeStateAbbreviation: abbreviation }));
 
+  const setCheckContext = (ctx: CheckContext) =>
+    setProfile((p) => ({ ...p, checkContext: ctx }));
+
   const markSaved = () => setProfile((p) => ({ ...p, saved: true }));
   const markUnsaved = () => setProfile((p) => ({ ...p, saved: false }));
   const resetProfile = () => setProfile(DEFAULT_PROFILE);
@@ -168,6 +184,7 @@ export function ModProfileProvider({ children }: { children: ReactNode }) {
         setExhaust,
         setSuspension,
         setHomeState,
+        setCheckContext,
         markSaved,
         markUnsaved,
         resetProfile,
