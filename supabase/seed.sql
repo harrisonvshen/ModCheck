@@ -1,11 +1,7 @@
--- ============================================================
--- Seed: 10 US states + their tint laws
--- Sources: state DMV websites and vehicle code, as of early 2026
--- ============================================================
+-- 10 states + tint laws
+-- pulled from state DMV pages and vehicle codes, early 2026
 
--- ────────────────────────────────────────────
--- 1. Insert states
--- ────────────────────────────────────────────
+-- 1. states
 
 insert into states (id, name, abbreviation, inspection_required, emissions_required) values
   ('a0000000-0000-0000-0000-000000000001', 'California',    'CA', false, true),
@@ -20,12 +16,8 @@ insert into states (id, name, abbreviation, inspection_required, emissions_requi
   ('a0000000-0000-0000-0000-000000000010', 'Virginia',      'VA', true,  true)
 on conflict (abbreviation) do nothing;
 
--- ────────────────────────────────────────────
--- 2. Insert tint laws
--- ────────────────────────────────────────────
--- VLT values = minimum visible light transmission percentage required
--- null = no restriction for that position
--- Data researched from each state's vehicle code
+-- 2. tint laws
+-- VLT = min visible light transmission. null means no restriction.
 
 insert into tint_laws (
   state_id, front_side_vlt, rear_side_vlt, rear_window_vlt,

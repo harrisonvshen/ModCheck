@@ -1,7 +1,5 @@
--- ============================================================
 -- Tint law corrections based on 2026 DMV/state code verification
 -- Run this in Supabase SQL Editor.
--- ============================================================
 
 -- TEXAS: Rear side windows have NO VLT restriction when the
 -- vehicle has dual outside mirrors (the default for modern cars).

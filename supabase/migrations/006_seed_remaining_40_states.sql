@@ -1,14 +1,8 @@
--- ============================================================
--- Seed: Remaining 40 US states + their tint laws
--- ⚠️  IMPORTANT: These values are compiled from state vehicle codes
---    as of early 2026. Verify against current DMV sources before
---    production launch. Laws change, some states updated in 2024-2025.
--- ============================================================
+-- the other 40 states + tint laws.
+-- data is from state vehicle codes as of early 2026.
+-- double-check against DMV sites before relying on it for anything important.
 
--- ────────────────────────────────────────────
--- 1. Insert remaining 40 states
--- ────────────────────────────────────────────
--- Already seeded: CA, TX, FL, NY, MA, AZ, CO, GA, IL, VA
+-- 1. states (CA TX FL NY MA AZ CO GA IL VA already in seed.sql)
 
 insert into states (id, name, abbreviation, inspection_required, emissions_required) values
   ('a0000000-0000-0000-0000-000000000011', 'Alabama',        'AL', false, false),
@@ -53,12 +47,7 @@ insert into states (id, name, abbreviation, inspection_required, emissions_requi
   ('a0000000-0000-0000-0000-000000000050', 'Wyoming',        'WY', false, false)
 on conflict (abbreviation) do nothing;
 
--- ────────────────────────────────────────────
--- 2. Insert tint laws for remaining 40 states
--- ────────────────────────────────────────────
--- Format: state_id, front_side_vlt, rear_side_vlt, rear_window_vlt,
---         windshield_strip, reflective_allowed, medical_exemption,
---         fine_first_offense, notes
+-- 2. tint laws
 
 insert into tint_laws (
   state_id, front_side_vlt, rear_side_vlt, rear_window_vlt,

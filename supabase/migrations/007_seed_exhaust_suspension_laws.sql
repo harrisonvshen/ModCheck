@@ -9,9 +9,7 @@
 -- the federal Clean Air Act / EPA regulations in ALL 50 states, regardless
 -- of individual state law.
 
--- ============================================================
 --  EXHAUST LAWS
--- ============================================================
 
 insert into exhaust_laws
   (state_id, max_decibels, muffler_required, cat_delete_legal, straight_pipe_legal, measurement_method, fine_first_offense, notes)
@@ -120,9 +118,7 @@ values
 on conflict (state_id) do nothing;
 
 
--- ============================================================
 --  SUSPENSION LAWS
--- ============================================================
 
 insert into suspension_laws
   (state_id, max_lift_inches, max_bumper_height_front, max_bumper_height_rear, frame_height_limit, lowering_restrictions, fine_first_offense, notes)
@@ -231,9 +227,7 @@ values
 on conflict (state_id) do nothing;
 
 
--- ============================================================
 --  ROW LEVEL SECURITY
--- ============================================================
 
 -- RLS policies for exhaust_laws and suspension_laws
 alter table exhaust_laws enable row level security;
