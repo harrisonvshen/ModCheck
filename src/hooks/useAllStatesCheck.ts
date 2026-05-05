@@ -106,7 +106,7 @@ export function useAllStatesCheck(mods: ModProfile) {
     }
 
     // Fetch exhaust laws (only if not stock)
-    let exhaustMap = new Map<string, ExhaustLawRow>();
+    const exhaustMap = new Map<string, ExhaustLawRow>();
     if (mods.exhaust.type !== 'stock') {
       const { data: exhaustData, error: exhaustErr } = await supabase
         .from('exhaust_laws')
@@ -132,7 +132,7 @@ export function useAllStatesCheck(mods: ModProfile) {
     }
 
     // Fetch suspension laws (only if not stock)
-    let suspMap = new Map<string, SuspensionLawRow>();
+    const suspMap = new Map<string, SuspensionLawRow>();
     if (mods.suspension.type !== 'stock') {
       const { data: suspData, error: suspErr } = await supabase
         .from('suspension_laws')
